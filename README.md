@@ -16,3 +16,8 @@ Para asegurar el funcionamiento de este programa, el entorno de Python deberá t
     $ pip install --user pandas
     $ pip install --user numpy
     $ pip install --user sklearn
+
+
+### Documentación
+
+
