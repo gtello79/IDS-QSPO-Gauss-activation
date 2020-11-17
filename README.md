@@ -5,7 +5,7 @@ Esta es una tarea para la asignatura de Sistemas Distribuidos impartida en la Po
 ### Autores
 
 - Gonzalo Tello
-- Nicolas Aveldaño
+- Nicolas Avendaño
 - Gonzalo Pauchard
 - Rodrigo Maureira
 
