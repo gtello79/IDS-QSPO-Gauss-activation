@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
 # In[355]:
 
-
+    #Preprocesado de datos
     DATA_PATH = 'Data/KDDTest+.txt'
     data = data = pd.read_csv(DATA_PATH, sep=",", header=None)
     a = 0.1
