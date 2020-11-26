@@ -33,6 +33,7 @@ Ambos de ellos se emplearán para el rango de la normalización. Posteriormente 
 
 A continuación se deben seleccionar los valores para la matrix X y el vector Y. En este caso se han tomado todas las columanas a excepción de la 41 para X y únicamente la columna 41 para el vector Y. Luego se aplica la normalizaión
 
-    X = data.loc[:, data.columns != 41]         # Matriz X
-    y = data.loc[:, data.columns == 41]         # Vector Y
-    normalized_X=(X-X.min())/(X.max()-X.min())  # Normalización
+    X = data.loc[:, data.columns != 41]           # Matriz X
+    y = data.loc[:, data.columns == 41]           # Vector Y
+    normalized_X = (X-X.min())/(X.max()-X.min())  # Normalización
+    normalized_X = (b-a)*normalized_X+a
