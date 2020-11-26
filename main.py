@@ -3,4 +3,7 @@
 import pandas as pd
 
 if __name__ == "__main__":
-    print("Hola Mundo!")
+    DATA_PATH = "DATA/test.txt"
+    data = pd.read_csv(DATA_PATH)
+    
+    
