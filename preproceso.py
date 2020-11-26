@@ -74,7 +74,7 @@ if __name__ == "__main__":
     # In[375]:
 
 
-    output_data.to_csv(path_or_buf = 'Data/test.txt', index = False, mode = 'w+')
+    output_data.to_csv(path_or_buf = 'Data/kddtest.txt', index = False, mode = 'w+')
 
 
 
