@@ -20,7 +20,7 @@ Para asegurar el funcionamiento de este programa, el entorno de Python deberá t
 
 ### Documentación
 
-##### Preprocesado
+#### Preprocesado
 Para la implementación se ha utilizado el DataSet KDDTest. Adicionalmente se han empleado los siguientes parámetros con sus respectivos valores
     a = 0.1
     b = 0.99
@@ -33,6 +33,6 @@ Ambos de ellos se emplearán para el rango de la normalización. Posteriormente 
 
 A continuación se deben seleccionar los valores para la matrix X y el vector Y. En este caso se han tomado todas las columanas a excepción de la 41 para X y únicamente la columna 41 para el vector Y. Luego se aplica la normalizaión
 
-    X = data.loc[:, data.columns != 41]
-    y = data.loc[:, data.columns == 41]
-    normalized_X=(X-X.min())/(X.max()-X.min())
+    X = data.loc[:, data.columns != 41]         # Matriz X
+    y = data.loc[:, data.columns == 41]         # Vector Y
+    normalized_X=(X-X.min())/(X.max()-X.min())  # Normalización
