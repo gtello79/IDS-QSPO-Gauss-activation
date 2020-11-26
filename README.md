@@ -11,4 +11,13 @@ Esta es una tarea para la asignatura de Sistemas Distribuidos impartida en la Po
 
 ### Configuración
 
+Para asegurar el funcionamiento de este programa, el entorno de Python deberá tenerar las siguientes librerías. Estas se pueden instalar mediante pip de la siguiente manera.
+
     $ pip install --user pandas
+    $ pip install --user numpy
+    $ pip install --user sklearn
+
+
+### Documentación
+
+
