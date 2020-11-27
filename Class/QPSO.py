@@ -1,38 +1,42 @@
+#!/usr/bin/env python
 import random as rd
 import numpy as np
 import math
 from sklearn.metrics import mean_squared_error as mse
 
 class Q_PSO:
-    
-    def __init__(self, maxIter, numPart, numHidden, D):
+
+    def __init__(self, maxIter, numPart, numHidden, D, xe, ye):
         self.maxIter = maxIter
-        self.np = None
-        self.nh = None
+        self.np = numPart
+        self.nh = numHidden
         self.weight = None
         self.X = None
-        self.D = None
+        self.D = D
         #Inicializar xe - ye
-        self.xe = None  
-        self.ye = None
+        self.xe = xe  
+        self.ye = ye
         self.C = None
-        
+
+        #Inicializacion de la poblacion
         self.ini_swarm(numPart,numHidden,D)
+        self.run_QPSO()
+
 
     def ini_swarm(self, num_part, num_hidden, D):
         self.np = num_part
         self.nh = num_hidden
         
-        dim = num_hidden*D  
-        X = np.zeros( (num_part, dim), dtype=float) 
+        dim = self.nh*D  
+        X = np.zeros( (self.np, dim), dtype=float) 
         
-        for i in range(num_part):
-            wh = self.rand_w(num_hidden,D)
-            a = np.reshape(wh, (1, num_hidden*D))
+        for i in range(self.np):
+            wh = self.rand_w(self.nh, D)
+            a = np.reshape(wh, (1, dim))
             X[i]= a
         self.X = X 
-        print(self.X.shape)
-    
+        
+
     def rand_w(self, nextNodes, currentNodes):
         w = np.random.random((nextNodes, currentNodes))
         x = nextNodes+currentNodes
@@ -49,6 +53,7 @@ class Q_PSO:
     def run_QPSO(self):
         for i in range(self.maxIter):
             newPFitness, newBeta = self.fitness_no_arg()
+            print
             #newPFitness, newBeta = self.fitness(self.xe, self.ye, self.nh, self.X, self.)
             
         return True
@@ -69,10 +74,10 @@ class Q_PSO:
     
     def fitness_no_arg(self):  #lo mismo sin argumentos
         w2 = np.zeros((self.nh, self.D), dtype=float)
-        MSE = np.zeros((self.np, 1), dtype=float)
+        MSE = np.zeros(self.np , dtype=float)
         for i in range(self.np):
             p = self.X[i]
-            w1 = np.reshape(self.X, (self.nh, self.D)) #se vuelve a estructurar como matriz
+            w1 = np.reshape(p, (self.nh, self.D)) #se vuelve a estructurar como matriz
             H = self.gaussian_activation(self.xe, w1)
             w2[i] = self.mlp_pinv(H)
             ze = w2[i]*H
