@@ -5,35 +5,34 @@ from sklearn.metrics import mean_squared_error as mse
 
 class Q_PSO:
     
-    def __init__(self):
+    def __init__(self, maxIter, numPart, numHidden, D):
+        self.maxIter = maxIter
         self.np = None
         self.nh = None
         self.weight = None
         self.X = None
-        #Falta algo que le de el valor a las iteraciones, ojo al tejo
-        self.maxIter = None
-        self.D = None #numero de columnas del input 
+        self.D = None
+        #Inicializar xe - ye
+        self.xe = None  
         self.ye = None
         self.C = None
         
-    #Swarm es una matriz de tamaño (np, nh*D), cada fila de la matriz representa una matriz de pesos
-    #"estirada", si por ejemplo son 10 nodos de entrada y 20 escondidos, una matriz de pesos seria 
-    #de dimension (20,10), entonces una particula representa esta matriz como un solo vector de 
-    # 20*10 = 200 columnas y una fila, por lo tanto la matriz de la swarm es de num_particulas*200
-    #en este caso de ejemplo.
-    def ini_swarm(self, num_part, num_hidden, D):  #D es el la dimension del input en este caso 40 app
-        X = np.zeros((num_part,num_hidden*D),dtype=float) 
+        self.ini_swarm(numPart,numHidden,D)
+
+    def ini_swarm(self, num_part, num_hidden, D):
         self.np = num_part
         self.nh = num_hidden
-
+        
+        dim = num_hidden*D  
+        X = np.zeros( (num_part, dim), dtype=float) 
+        
         for i in range(num_part):
-            #Weight hidden NP
-            wh = self.rand_w(num_hidden,D) #retorna una matriz de tamaño num_hidden*D
+            wh = self.rand_w(num_hidden,D)
             a = np.reshape(wh, (1, num_hidden*D))
             X[i]= a
-        self.X = X #no es lo mismo que weight creo
+        self.X = X 
+        print(self.X.shape)
     
-    #retorna matriz de tamaño(nextNodes,currentNodes)
     def rand_w(self, nextNodes, currentNodes):
         w = np.random.random((nextNodes, currentNodes))
         x = nextNodes+currentNodes
@@ -48,7 +47,10 @@ class Q_PSO:
         
         
     def run_QPSO(self):
-    
+        for i in range(self.maxIter):
+            newPFitness, newBeta = self.fitness_no_arg()
+            #newPFitness, newBeta = self.fitness(self.xe, self.ye, self.nh, self.X, self.)
+            
         return True
 
     #esta funcion lo que hace mas o menos es recomponer las matrices de pesos de cada particula
@@ -63,7 +65,7 @@ class Q_PSO:
             w2[i] = self.mlp_pinv(H)
             ze = w2[i]*H
             MSE[i] = math.sqrt(mse(ye, ze))
-        return(MSE, w2)
+        return MSE, w2
     
     def fitness_no_arg(self):  #lo mismo sin argumentos
         w2 = np.zeros((self.nh, self.D), dtype=float)
@@ -75,7 +77,7 @@ class Q_PSO:
             w2[i] = self.mlp_pinv(H)
             ze = w2[i]*H
             MSE[i] = math.sqrt(mse(self.ye, ze))
-        return(MSE, w2)
+        return MSE, w2
     
     def mlp_pinv(self, H):
         L,N = H.shape
@@ -85,7 +87,7 @@ class Q_PSO:
         return w2
     
     #7 argumentos xdxd
-    def upd_particle(X,pBest,pFitness, gBest, gFitness, New_pFitness, newBeta, wBest):
+    def upd_particle(self, X, pBest,pFitness, gBest, gFitness, New_pFitness, newBeta, wBest):
         for i in range(pFitness):
             if (New_pFitness[i] < pFitness[i]):
                 pFitness[i] = New_pFitness[i]
@@ -100,5 +102,3 @@ class Q_PSO:
         return pBest, pFitness, gBest, gFitness, wBest
         
         
-    
-test = Q_PSO()

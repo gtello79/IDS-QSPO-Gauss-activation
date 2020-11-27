@@ -18,6 +18,8 @@ Para asegurar el funcionamiento de este programa, el entorno de Python deberá t
     $ pip install --user sklearn
 
 
-### Documentación
+# Documentación
 
-
+## Código
+### Init()
+    Swarm es una matriz de tamano (np, nh*D), cada fila de la matriz representa una matriz de pesos estirada, si por ejemplo son 10 nodos de entrada y 20 escondidos, una matriz de pesos seria de dimension (20,10), entonces una particula representa esta matriz como un solo vector de 20*10 = 200 columnas y una fila, por lo tanto la matriz de la swarm es de num_particulas*200 en este caso de ejemplo.
