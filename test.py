@@ -15,7 +15,7 @@ def gaussian_activation(x_n, w_j):
 DATA_PATH = "Data/kddtest.txt"
 data = pd.read_csv(DATA_PATH)
 
-xe = data.iloc[:, 1:-1] #probando sample mas chico
+xe = data.iloc[:, 1:-1] 
 ye = data.iloc[:, -1]
 
 N, D = xe.shape
