@@ -24,7 +24,8 @@ if __name__ == "__main__":
     X0 = np.ones((D,1))
 
     Xe = np.hstack((xe, X0))
+    
+    N = N+1
 
 
-
-    q = Q_PSO(maxIter, numPart, numHidden, D, Xe, ye)
+    q = Q_PSO(maxIter, numPart, numHidden, N, Xe, ye)
