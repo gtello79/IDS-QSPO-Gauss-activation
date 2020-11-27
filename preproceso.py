@@ -14,11 +14,11 @@ if __name__ == "__main__":
 # In[355]:
 
 
-    DATA_PATH = 'Data/KDDTest+.txt'
+    DATA_PATH = 'Data/KDDTrain+_20Percent.txt'
     data = data = pd.read_csv(DATA_PATH, sep=",", header=None)
     a = 0.1
     b = 0.99
-
+    
 
     # In[356]:
 
@@ -28,17 +28,17 @@ if __name__ == "__main__":
     data[1]= encoder.fit_transform(data[1]) 
     data[2]= encoder.fit_transform(data[2]) 
     data[3]= encoder.fit_transform(data[3]) 
-
+    
 
     # In[357]:
 
-
+    
     data = data.drop(42,axis = 1) #se dropea la ultima columna que representa la dificultad del input
     data = data.drop(19, axis = 1) #el atributo 19 por alguna razon tiene puros 0
-
+    data = data.drop(20, axis = 1)
 
     # In[358]:
-
+    
 
     data[41] = data[41]=='normal'
     data[41] = data[41].replace(True, 1)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # In[360]:
 
 
-    X =data.loc[:, data.columns != 41]
+    X = data.loc[:, data.columns != 41]
     y = data.loc[:, data.columns == 41]
 
 
@@ -66,13 +66,15 @@ if __name__ == "__main__":
     # In[374]:
 
 
-    normalized_X = (b-a)*normalized_X + a #esto lo encontre un poco raro pero sale en el pdf xd
+    normalized_X = (b-a)*normalized_X + a 
     output_data = normalized_X
     output_data = output_data.join(y)
 
 
-    # In[375]:
 
+
+    # In[375]:
+    
 
     output_data.to_csv(path_or_buf = 'Data/kddtest.txt', index = False, mode = 'w+')
 

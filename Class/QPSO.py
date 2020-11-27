@@ -21,7 +21,7 @@ class Q_PSO:
 
         #Inicializacion de la poblacion
         self.ini_swarm(numPart,numHidden,D)
-        self.gBest, self.wBest, self.mBest = self.run_QPSO()
+
 
 
     def ini_swarm(self, num_part, num_hidden, D):
@@ -55,33 +55,41 @@ class Q_PSO:
         
     def run_QPSO(self):
         iter = 0
-        alfa = np.zeros(maxIter)
-        for p in range(maxIter):
+        alfa = np.zeros(self.maxIter)
+        for p in range(self.maxIter):
             alfa[p] = 0.95 - ((0.95 - 0.2)/self.maxIter)*p
         pBest = np.zeros((self.np, self.D*self.nh))
-        pFitness = np.ones((1,self.np))*100000
-        gBest = np.ones((1, self.D*self.nh))
-        wBest = np.zeros((1,self.nh))
+        pFitness = np.ones(self.np)*100000
+        gBest = np.ones(self.D*self.nh)
+        wBest = np.zeros(self.nh)
         gFitness = 1000000000
         MSE = np.zeros((self.maxIter))
-        
+
         for iter in range(self.maxIter):
-            print("Iteracion numero: "+ str(iter))
+            print("Iteracion numero: "+ str(iter+1))
             new_pFitness, newBeta = self.fitness()
             pBest, pFitness, gBest, gFitness, wBest = self.upd_particle(self.X, pBest, pFitness, gBest,
                                                                 gFitness,new_pFitness, newBeta, wBest)
 
             MSE[iter] = gFitness
+            print(MSE[iter])
+
             mBest = pBest.mean(axis=0)
+            avg_t = 0
             for i in range(self.np):
                 for j in range(self.nh*self.D):
                     phi=rd.random()
                     u = rd.random()
                     pBest[i][j] = phi*pBest[i][j] + (1-phi)*gBest[j]
+                    t = alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
+                    avg_t += t
                     if (rd.random() > 0.5):
-                        self.X[i][j] = pBest[i][j] + alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
+                        self.X[i][j] = pBest[i][j] + t
+
                     else:
-                        self.X[i][j] = pBest[i][j] - alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
+                        self.X[i][j] = pBest[i][j] - t
+            avg_t = avg_t/(self.np*self.nh*self.D)
+
         self.w1 = np.reshape(gBest, (self.nh, self.D))
         return gBest, wBest, MSE
 
@@ -89,7 +97,7 @@ class Q_PSO:
     #esta funcion lo que hace mas o menos es recomponer las matrices de pesos de cada particula
     #y testear su MSE
 
-    def fitness(self):  #lo mismo sin argumentos
+    def fitness(self):  
         w2 = np.zeros((self.np, self.nh), dtype=float)
         MSE = np.zeros(self.np , dtype=float)
         for i in range(self.np):
@@ -103,13 +111,9 @@ class Q_PSO:
     
     def mlp_pinv(self, H):
         L,N = H.shape
-
         yh = np.matmul(np.transpose(self.ye),np.transpose(H))
-
         hh = np.matmul(H,np.transpose(H))
         hh = hh + (np.eye(hh.shape[0])/self.C)
-
-
         w2 = np.matmul(np.transpose(yh),np.linalg.pinv(hh))
 
         return w2
@@ -118,10 +122,10 @@ class Q_PSO:
     def upd_particle(self, X, pBest,pFitness, gBest, gFitness, New_pFitness, newBeta, wBest):
         
         for i in range(self.np):
-            if (New_pFitness[i] < pFitness[0][i]):
-                pFitness[0][i] = New_pFitness[i]
+            if (New_pFitness[i] < pFitness[i]):
+                pFitness[i] = New_pFitness[i]
                 pBest[i][:] = X[i, :]
-        New_gFitness = min(pFitness[0])
+        New_gFitness = min(pFitness)
         idx = np.argmin(pFitness)
         if (New_gFitness < gFitness):
             gFitness = New_gFitness
@@ -130,32 +134,3 @@ class Q_PSO:
 
         return pBest, pFitness, gBest, gFitness, wBest
 
-#estos parametros se tienen q cargar desde la config
-maxIter = 1000
-numPart = 60
-numHidden = 40
-DATA_PATH = "../DATA/test.txt"
-data = pd.read_csv(DATA_PATH)
-
-xe = data.iloc[:, 1:40]
-ye = data.iloc[:, 40]
-    
-D, N = xe.shape
-
-L = 20
-C = 100
-
-xe = np.array(xe)
-ye = np.array(ye)
-
-X0 = np.ones((D,1))
-Xe = np.hstack((xe, X0))
-    
-N = N+1
-
-
-q = Q_PSO(maxIter, numPart, numHidden, N, Xe, ye, C)      
-wh = q.w1
-H = q.gaussian_activation(q.xe, wh)
-w2 = q.mlp_pinv(H)
-Zv = np.matmul(w2,H)

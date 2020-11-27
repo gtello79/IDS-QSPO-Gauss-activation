@@ -7,7 +7,7 @@ if __name__ == "__main__":
     maxIter = 3
     numPart = 4
     numHidden = 4
-    DATA_PATH = "DATA/test.txt"
+    DATA_PATH = "Data/test.txt"
     data = pd.read_csv(DATA_PATH)
 
     xe = data.iloc[:, 1:40]
