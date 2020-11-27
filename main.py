@@ -4,7 +4,7 @@ import numpy as np
 from Class.QPSO import Q_PSO
  
 if __name__ == "__main__":
-    maxIter = 20
+    maxIter = 3
     numPart = 4
     numHidden = 4
     DATA_PATH = "DATA/test.txt"
@@ -28,4 +28,4 @@ if __name__ == "__main__":
     N = N+1
 
 
-    q = Q_PSO(maxIter, numPart, numHidden, N, Xe, ye)
+    q = Q_PSO(maxIter, numPart, numHidden, N, Xe, ye, C)

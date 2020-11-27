@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 import random as rd
+import pandas as pd
 import numpy as np
 import math
 from sklearn.metrics import mean_squared_error as mse
 
 class Q_PSO:
 
-    def __init__(self, maxIter, numPart, numHidden, D, xe, ye):
+    def __init__(self, maxIter, numPart, numHidden, D, xe, ye, C):
         self.maxIter = maxIter
         self.np = numPart
         self.nh = numHidden
@@ -16,11 +17,11 @@ class Q_PSO:
         #Inicializar xe - ye
         self.xe = xe  
         self.ye = ye
-        self.C = None
+        self.C = C
 
         #Inicializacion de la poblacion
         self.ini_swarm(numPart,numHidden,D)
-        self.fitness_no_arg()
+        self.gBest, self.wBest, self.mBest = self.run_QPSO()
 
 
     def ini_swarm(self, num_part, num_hidden, D):
@@ -53,11 +54,35 @@ class Q_PSO:
         
         
     def run_QPSO(self):
-        for i in range(self.maxIter):
-            newPFitness, newBeta = self.fitness_no_arg()
-            print
-            #newPFitness, newBeta = self.fitness(self.xe, self.ye, self.nh, self.X, self.)
-            
+        iter = 0
+        alfa = np.zeros(maxIter)
+        for p in range(maxIter):
+            alfa[p] = 0.95 - ((0.95 - 0.2)/self.maxIter)*p
+        pBest = np.zeros((self.np, self.D*self.nh))
+        pFitness = np.ones((1,self.np))*100000
+        gBest = np.ones((1, self.D*self.nh))
+        wBest = np.zeros((1,self.nh))
+        gFitness = 1000000000
+        MSE = np.zeros((self.maxIter))
+        
+        for iter in range(self.maxIter):
+            new_pFitness, newBeta = self.fitness()
+            pBest, pFitness, gBest, gFitness, wBest = self.upd_particle(self.X, pBest, pFitness, gBest,
+                                                                gFitness,new_pFitness, newBeta, wBest)
+
+            MSE[iter] = gFitness
+            mBest = pBest.mean(axis=0)
+            for i in range(self.np):
+                for j in range(self.nh*self.D):
+                    phi=rd.random()
+                    u = rd.random()
+                    pBest[i][j] = phi*pBest[i][j] + (1-phi)*gBest[j]
+                    if (rd.random() > 0.5):
+                        self.X[i][j] = pBest[i][j] + alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
+                    else:
+                        self.X[i][j] = pBest[i][j] - alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
+                        
+        return gBest, wBest, MSE
         return True
 
     #esta funcion lo que hace mas o menos es recomponer las matrices de pesos de cada particula
@@ -80,25 +105,51 @@ class Q_PSO:
 
         yh = np.matmul(np.transpose(self.ye),np.transpose(H))
 
-        hh = np.matmul(H,np.transpose(H)) #falta agregar eye/C
+        hh = np.matmul(H,np.transpose(H))
+        hh = hh + (np.eye(4)/self.C)
+
 
         w2 = np.matmul(np.transpose(yh),np.linalg.pinv(hh))
-       # print(w2.shape)
+
         return w2
     
-    #7 argumentos xdxd
+
     def upd_particle(self, X, pBest,pFitness, gBest, gFitness, New_pFitness, newBeta, wBest):
-        for i in range(pFitness):
-            if (New_pFitness[i] < pFitness[i]):
-                pFitness[i] = New_pFitness[i]
+        
+        for i in range(self.np):
+            if (New_pFitness[i] < pFitness[0][i]):
+                pFitness[0][i] = New_pFitness[i]
                 pBest[i][:] = X[i, :]
-        New_gFitness = min(pFitness)
+        New_gFitness = min(pFitness[0])
         idx = np.argmin(pFitness)
         if (New_gFitness < gFitness):
             gFitness = New_gFitness
             gBest = pBest[idx][:]
             wBest = newBeta[idx][:]
-            
+
         return pBest, pFitness, gBest, gFitness, wBest
         
-        
+maxIter = 300
+numPart = 5
+numHidden = 4
+DATA_PATH = "../DATA/test.txt"
+data = pd.read_csv(DATA_PATH)
+
+xe = data.iloc[:, 1:40]
+ye = data.iloc[:, 40]
+    
+D, N = xe.shape
+
+L = 20
+C = 2
+
+xe = np.array(xe)
+ye = np.array(ye)
+
+X0 = np.ones((D,1))
+Xe = np.hstack((xe, X0))
+    
+N = N+1
+
+
+q = Q_PSO(maxIter, numPart, numHidden, N, Xe, ye, C)      
