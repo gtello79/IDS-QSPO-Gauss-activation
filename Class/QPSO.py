@@ -11,13 +11,13 @@ class Q_PSO:
         self.maxIter = maxIter
         self.np = numPart
         self.nh = numHidden
-        self.weight = None
         self.X = None
         self.D = D
         #Inicializar xe - ye
         self.xe = xe  
         self.ye = ye
         self.C = C
+        self.w1 = None
 
         #Inicializacion de la poblacion
         self.ini_swarm(numPart,numHidden,D)
@@ -66,6 +66,7 @@ class Q_PSO:
         MSE = np.zeros((self.maxIter))
         
         for iter in range(self.maxIter):
+            print("Iteracion numero: "+ str(iter))
             new_pFitness, newBeta = self.fitness()
             pBest, pFitness, gBest, gFitness, wBest = self.upd_particle(self.X, pBest, pFitness, gBest,
                                                                 gFitness,new_pFitness, newBeta, wBest)
@@ -81,9 +82,9 @@ class Q_PSO:
                         self.X[i][j] = pBest[i][j] + alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
                     else:
                         self.X[i][j] = pBest[i][j] - alfa[iter]*abs(mBest[j]-self.X[i][j])*math.log(1/u)
-                        
+        self.w1 = np.reshape(gBest, (self.nh, self.D))
         return gBest, wBest, MSE
-        return True
+
 
     #esta funcion lo que hace mas o menos es recomponer las matrices de pesos de cada particula
     #y testear su MSE
@@ -106,7 +107,7 @@ class Q_PSO:
         yh = np.matmul(np.transpose(self.ye),np.transpose(H))
 
         hh = np.matmul(H,np.transpose(H))
-        hh = hh + (np.eye(4)/self.C)
+        hh = hh + (np.eye(hh.shape[0])/self.C)
 
 
         w2 = np.matmul(np.transpose(yh),np.linalg.pinv(hh))
@@ -128,10 +129,11 @@ class Q_PSO:
             wBest = newBeta[idx][:]
 
         return pBest, pFitness, gBest, gFitness, wBest
-        
-maxIter = 300
-numPart = 5
-numHidden = 4
+
+#estos parametros se tienen q cargar desde la config
+maxIter = 1000
+numPart = 60
+numHidden = 40
 DATA_PATH = "../DATA/test.txt"
 data = pd.read_csv(DATA_PATH)
 
@@ -141,7 +143,7 @@ ye = data.iloc[:, 40]
 D, N = xe.shape
 
 L = 20
-C = 2
+C = 100
 
 xe = np.array(xe)
 ye = np.array(ye)
@@ -153,3 +155,7 @@ N = N+1
 
 
 q = Q_PSO(maxIter, numPart, numHidden, N, Xe, ye, C)      
+wh = q.w1
+H = q.gaussian_activation(q.xe, wh)
+w2 = q.mlp_pinv(H)
+Zv = np.matmul(w2,H)
