@@ -66,13 +66,12 @@ class Q_PSO:
         MSE = np.zeros((self.maxIter))
 
         for iter in range(self.maxIter):
-            print("Iteracion numero: "+ str(iter+1))
+            print("Iteracion numero "+ str(iter+1))
             new_pFitness, newBeta = self.fitness()
             pBest, pFitness, gBest, gFitness, wBest = self.upd_particle(self.X, pBest, pFitness, gBest,
                                                                 gFitness,new_pFitness, newBeta, wBest)
 
             MSE[iter] = gFitness
-            print(MSE[iter])
 
             mBest = pBest.mean(axis=0)
             avg_t = 0

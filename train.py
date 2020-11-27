@@ -4,8 +4,8 @@ from Class.QPSO import Q_PSO
 
 DATA_PATH = "Data/kddtest.txt"
 data = pd.read_csv(DATA_PATH)
-xe = data.iloc[0:1000, 1:39] #probando sample mas chico
-ye = data.iloc[0:1000, 39]
+xe = data.iloc[0:5000, 1:-1] #probando sample mas chico
+ye = data.iloc[0:5000, -1]
    
 N, D = xe.shape
 xe = np.array(xe)
