@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[354]:
+
 
 
 import numpy as np
@@ -11,8 +11,24 @@ from sklearn import preprocessing #no se si se podra usar esto para label encode
 
 if __name__ == "__main__":
 
-# In[355]:
+    def norma(f_vector):
+        x_max = max(f_vector)
+        x_min = min(f_vector)
 
+        for i in range(len(f_vector)):
+            y = (f_vector[i] - x_min) / (x_max - x_min)
+            y = (b - a) * y + a
+            f_vector[i] = y
+
+        return f_vector
+    
+    
+    
+    def scale_features(data):
+        for i in range(len(data)):
+            data[i] = norma(data[i])
+
+        return data
 
     DATA_PATH = 'Data/KDDTrain+_20Percent.txt'
     data = data = pd.read_csv(DATA_PATH, sep=",", header=None)
@@ -20,7 +36,7 @@ if __name__ == "__main__":
     b = 0.99
     
 
-    # In[356]:
+    data = data.sample(frac=1) #randomizar la data
 
     encoder = preprocessing.LabelEncoder()
 
@@ -30,53 +46,43 @@ if __name__ == "__main__":
     data[3]= encoder.fit_transform(data[3]) 
     
 
-    # In[357]:
+
 
     
     data = data.drop(42,axis = 1) #se dropea la ultima columna que representa la dificultad del input
-    data = data.drop(19, axis = 1) #el atributo 19 por alguna razon tiene puros 0
-    data = data.drop(20, axis = 1)
 
-    # In[358]:
-    
+
 
     data[41] = data[41]=='normal'
     data[41] = data[41].replace(True, 1)
 
 
-    # In[359]:
+
 
 
     data[41] = data[41].replace(0, -1)
 
 
-    # In[360]:
 
 
     X = data.loc[:, data.columns != 41]
     y = data.loc[:, data.columns == 41]
 
+    X = np.array(X)
 
-    # In[361]:
-
-
-    normalized_X=(X-X.min())/(X.max()-X.min())
-
-
-    # In[374]:
-
-
-    normalized_X = (b-a)*normalized_X + a 
+    
+    normalized_X = scale_features(X)
+    normalized_X = pd.DataFrame(normalized_X)
+    print(type(normalized_X))
     output_data = normalized_X
     output_data = output_data.join(y)
 
 
 
 
-    # In[375]:
-    
 
-    output_data.to_csv(path_or_buf = 'Data/kddtest.txt', index = False, mode = 'w+')
+
+    output_data.to_csv(path_or_buf = 'Data/train.txt', index = False, mode = 'w+')
 
 
 

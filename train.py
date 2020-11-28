@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
+import time
+
 from Class.QPSO import Q_PSO
 
-DATA_PATH = "Data/kddtest.txt"
+start_time = time.time()
+DATA_PATH = "Data/train.txt"
 data = pd.read_csv(DATA_PATH)
-xe = data.iloc[0:5000, 1:-1] #probando sample mas chico
-ye = data.iloc[0:5000, -1]
+xe = data.iloc[:, 1:-1] #probando sample mas chico
+ye = data.iloc[:, -1]
    
 N, D = xe.shape
 xe = np.array(xe)
@@ -26,3 +29,5 @@ q = Q_PSO(maxIter, numPart, L, D, Xe, ye, C)
 w1, w2, MSE = q.run_QPSO()
 
 np.savez("pesos", w1 = w1, w2 = w2, MSE = MSE)
+
+print("Tiempo de entrenamiento: %s segundos" % (time.time() - start_time))
