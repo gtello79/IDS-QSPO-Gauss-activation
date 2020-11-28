@@ -13,7 +13,7 @@ def gaussian_activation(x_n, w_j):
     return z
 
 #cargar data para test
-DATA_PATH = "Data/train.txt"
+DATA_PATH = "Data/test.txt"
 data = pd.read_csv(DATA_PATH)
 
 xe = data.iloc[:, 1:-1] 
@@ -58,3 +58,5 @@ for number in range(len(zv)):
 f_score = f1_score(ye, zv, average='macro')
 accuracy = accuracy_score(ye, zv)
 
+print(f_score)
+print(accuracy)

@@ -1,5 +1,5 @@
-L(hn),C,maxIter, numPart
-40,100,300,60				
+L(hn),C,maxIter,numPart,N
+40,100,300,60,1000				
 							
 							
 							
