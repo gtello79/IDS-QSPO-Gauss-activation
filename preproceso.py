@@ -6,7 +6,7 @@
 
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing #no se si se podra usar esto para label encoder xd
+from sklearn import preprocessing 
 
 
 if __name__ == "__main__":
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     encoder = preprocessing.LabelEncoder()
 
-    #pero que eficiente xdxd
+
     data[1]= encoder.fit_transform(data[1]) 
     data[2]= encoder.fit_transform(data[2]) 
     data[3]= encoder.fit_transform(data[3]) 
@@ -73,7 +73,6 @@ if __name__ == "__main__":
     
     normalized_X = scale_features(X)
     normalized_X = pd.DataFrame(normalized_X)
-    print(type(normalized_X))
     output_data = normalized_X
     output_data = output_data.join(y)
 
