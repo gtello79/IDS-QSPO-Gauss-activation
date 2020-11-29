@@ -9,20 +9,35 @@ import time
 
 start_time = time.time()
 
+
 def gaussian_activation(x_n, w_j):
     z = np.matmul(w_j,np.transpose(x_n))
     for number in z:
         number = np.exp(-1*(number*number))
     return z
-
-def gaussian_activation2(x_n, w_j):
-    tamano, D = Xe.shape
-
-    z = np.zeros((tamano, L))
-    for i in range(L):
-        for j in range(D):
-            z[:,i] = np.linalg.norm(Xe[:, j] - w1[i,j])
-    z = np.exp(-0.5*z*z)
+        
+def metrica(y_esperado, y_obtenido):
+    vp = 0
+    fp = 0
+    fn = 0
+    vn = 0
+    for i in range(len(y_esperado)):
+        if y_esperado[i] and y_obtenido[i] == 1:
+            vp += 1
+        if y_esperado[i] and y_obtenido[i] == -1:
+            vn += 1
+        if y_esperado[i] == 1 and y_obtenido[i] == -1:
+            fn += 1
+        if y_esperado[i] == -1 and y_obtenido[i] == 1:
+            fp += 1
+    accuracy = vp/(vp+fp)
+    recall = vp/(vp+fn)
+    f_score = 2*(accuracy*recall/(accuracy+recall))
+    
+    print("Accuracy = "+ str(accuracy))
+    print("F_score = " + str(f_score))
+        
+    return accuracy, f_score
 
 #cargar data para test
 DATA_PATH = "Data/test.txt"
@@ -67,19 +82,10 @@ for number in range(len(zv)):
         zv[number] = 1
 
 #Utilizar nuestras propias metricas
-f_score = f1_score(ye, zv, average='macro')
-accuracy = accuracy_score(ye, zv)
-
-print(f_score)
-print(accuracy)
 
 tamano, D = Xe.shape
 
-z = np.zeros((tamano, L))
-for i in range(L):
-    for j in range(D):
-        z[:,i] = np.linalg.norm(Xe[:, j] - w1[i,j])
-z = np.exp(-0.5*z*z)
-
 
 print("Tiempo de test: %s segundos" % (time.time() - start_time))
+
+accuracy, f_score = metrica(ye, zv)
