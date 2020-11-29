@@ -47,7 +47,7 @@ En caso de que se desee preprocesar un archivo diferente al establecido dentro d
 ## Código QPSO
 
 ### Init()
-    Swarm es una matriz de tamano (np, nh*D), cada fila de la matriz representa una matriz de pesos estirada, si por ejemplo son 10 nodos de entrada y 20 escondidos, una matriz de pesos seria de dimension (20,10), entonces una particula representa esta matriz como un solo vector de 20*10 = 200 columnas y una fila, por lo tanto la matriz de la swarm es de num_particulas*200 en este caso de ejemplo. Luego de definir la matriz de realiza la inicialización de la población con:
+Swarm es una matriz de tamano (np, nh*D), cada fila de la matriz representa una matriz de pesos estirada, si por ejemplo son 10 nodos de entrada y 20 escondidos, una matriz de pesos seria de dimension (20,10), entonces una particula representa esta matriz como un solo vector de 20*10 = 200 columnas y una fila, por lo tanto la matriz de la swarm es de num_particulas*200 en este caso de ejemplo. Luego de definir la matriz de realiza la inicialización de la población con:
     
     self.ini_swarm(numPart,numHidden,D)
     
