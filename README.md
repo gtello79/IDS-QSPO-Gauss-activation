@@ -29,7 +29,6 @@ Ambos de ellos se emplearán para el rango de la normalización. Posteriormente 
 
     data[41] = data[41].replace(True, 1)    # remplaza valores True por 1
     data.drop(42,axis = 1)                  # se elimina la columna 42
-    data.drop(19, axis = 1)                 # se elimina la columna 19 debido a que alberga puros 0
 
 A continuación se deben seleccionar los valores para la matrix X y el vector Y. En este caso se han tomado todas las columanas a excepción de la 41 para X y únicamente la columna 41 para el vector Y. Luego se aplica la normalizaión
 
@@ -37,6 +36,10 @@ A continuación se deben seleccionar los valores para la matrix X y el vector Y.
     y = data.loc[:, data.columns == 41]           # Vector Y
     normalized_X = (X-X.min())/(X.max()-X.min())  # Normalización
     normalized_X = (b-a)*normalized_X+a
+
+En caso de que se desee preprocesar un archivo diferente al establecido dentro del repositorio, se deberá especificar manualmente modificando la siguiente variable dentro del archivo preproceso.py. A continuación un ejemplo de como debe quedar:
+
+    DATA_PATH = 'Data/KDDTrain+_20Percent.txt'
 
 ## Código
 ### Init()
