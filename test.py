@@ -4,13 +4,25 @@ from Class.QPSO import Q_PSO
 from sklearn.metrics import f1_score
 from sklearn.metrics import accuracy_score
 import math
+import time
 # -*- coding: utf-8 -*-
+
+start_time = time.time()
 
 def gaussian_activation(x_n, w_j):
     z = np.matmul(w_j,np.transpose(x_n))
     for number in z:
         number = np.exp(-1*(number*number))
     return z
+
+def gaussian_activation2(x_n, w_j):
+    tamano, D = Xe.shape
+
+    z = np.zeros((tamano, L))
+    for i in range(L):
+        for j in range(D):
+            z[:,i] = np.linalg.norm(Xe[:, j] - w1[i,j])
+    z = np.exp(-0.5*z*z)
 
 #cargar data para test
 DATA_PATH = "Data/test.txt"
@@ -60,3 +72,14 @@ accuracy = accuracy_score(ye, zv)
 
 print(f_score)
 print(accuracy)
+
+tamano, D = Xe.shape
+
+z = np.zeros((tamano, L))
+for i in range(L):
+    for j in range(D):
+        z[:,i] = np.linalg.norm(Xe[:, j] - w1[i,j])
+z = np.exp(-0.5*z*z)
+
+
+print("Tiempo de test: %s segundos" % (time.time() - start_time))

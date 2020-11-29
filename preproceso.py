@@ -70,7 +70,6 @@ if __name__ == "__main__":
 
     X = np.array(X)
 
-    
     normalized_X = scale_features(X)
     normalized_X = pd.DataFrame(normalized_X)
     output_data = normalized_X
@@ -81,7 +80,7 @@ if __name__ == "__main__":
 
 
 
-    output_data.to_csv(path_or_buf = 'Data/train.txt', index = False, mode = 'w+')
+    output_data.to_csv(path_or_buf = 'Data/train.txt', index = False    , mode = 'w+')
 
 
 
