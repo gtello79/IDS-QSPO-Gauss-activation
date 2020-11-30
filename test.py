@@ -1,9 +1,5 @@
 import numpy as np
 import pandas as pd
-from Class.QPSO import Q_PSO
-from sklearn.metrics import f1_score
-from sklearn.metrics import accuracy_score
-import math
 import time
 # -*- coding: utf-8 -*-
 
@@ -17,27 +13,38 @@ def gaussian_activation(x_n, w_j):
     return z
         
 def metrica(y_esperado, y_obtenido):
+    output = open("Data/metricas.txt", "a")
     vp = 0
     fp = 0
     fn = 0
     vn = 0
+    
     for i in range(len(y_esperado)):
-        if y_esperado[i] and y_obtenido[i] == 1:
+        if y_esperado[i] == 1 and y_obtenido[i] == 1:
             vp += 1
-        if y_esperado[i] and y_obtenido[i] == -1:
+        if y_esperado[i] == -1 and y_obtenido[i] == -1:
             vn += 1
         if y_esperado[i] == 1 and y_obtenido[i] == -1:
             fn += 1
         if y_esperado[i] == -1 and y_obtenido[i] == 1:
             fp += 1
-    accuracy = vp/(vp+fp)
-    recall = vp/(vp+fn)
-    f_score = 2*(accuracy*recall/(accuracy+recall))
+    accuracy_normal = vp/(vp+fp)
+    recall_normal = vp/(vp+fn)
+    f_score_normal = 2*(accuracy_normal*recall_normal/(accuracy_normal+recall_normal))
+    accuracy_ataque = vn/(vn+fn)
+    recall_ataque = vn/(vn + fp)
+    f_score_ataque = 2*(accuracy_ataque*recall_ataque/(accuracy_ataque + recall_ataque))
     
-    print("Accuracy = "+ str(accuracy))
-    print("F_score = " + str(f_score))
-        
-    return accuracy, f_score
+    print("Accuracy = "+ str(accuracy_normal))
+    print("F_score normal = " + str(f_score_normal))
+    print("F_score ataque = " + str(f_score_ataque))    
+    output.write("Accuracy: "+ str(accuracy_normal) + ", F score normal: " + str(f_score_normal) + 
+                 ", F score ataque: " + str(f_score_ataque) + "\n")
+    output.close()
+ 
+
+      
+    return accuracy_normal, f_score_normal, f_score_ataque
 
 #cargar data para test
 DATA_PATH = "Data/test.txt"
@@ -74,6 +81,7 @@ w1 = w1.reshape((L,D+1))
 H = gaussian_activation(Xe, w1)
 zv = np.matmul(w2,H)
 
+
 #se transforma el valor dependiendo de si es mayor o menor a 0 en prediccion
 for number in range(len(zv)):
     if zv[number] < 0: 
@@ -83,9 +91,8 @@ for number in range(len(zv)):
 
 #Utilizar nuestras propias metricas
 
-tamano, D = Xe.shape
 
 
 print("Tiempo de test: %s segundos" % (time.time() - start_time))
 
-accuracy, f_score = metrica(ye, zv)
+accuracy, f_score_normal, f_score_ataque = metrica(ye, zv)

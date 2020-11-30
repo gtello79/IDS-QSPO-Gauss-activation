@@ -19,32 +19,6 @@ from sklearn import preprocessing
 if __name__ == "__main__":
 
 
-    def norma(f_vector):
-        """
-        Norma: permite normalizar el vector resultante
-        el cual corresponde a cada columan del dataset.
-        """
-        x_max = max(f_vector)
-        x_min = min(f_vector)
-
-        for i in range(len(f_vector)):
-            # formula del pdf para la normalización
-            y = (f_vector[i] - x_min) / (x_max - x_min)
-            y = (b - a) * y + a
-            f_vector[i] = y
-        return f_vector
-    
-    
-    def scale_features(data):
-        """
-        Scale Features: permite normalizar cada una
-        de los parámetros del dataset. Para ello concatena
-        con norma().
-        """
-        for i in range(len(data)):
-            # invoca la funcion norma()
-            data[i] = norma(data[i])
-        return data
 
     # constantes para los archivos de entrada y salida
     DATA_PATH = 'Data/KDDTrain+_20Percent.txt'
@@ -67,7 +41,8 @@ if __name__ == "__main__":
     data[3]= encoder.fit_transform(data[3]) 
     # se elimina la última columna (ya que esta contiene la complejidad)
     data = data.drop(42,axis = 1)
-
+    data = data.drop(19,axis = 1)
+    data = data.drop(20,axis = 1)
 
     # remplazar columan 41. esta contiene el resultado
     # normal = 1, cualquier otro caso = -1
@@ -81,11 +56,11 @@ if __name__ == "__main__":
     # se toma vector con los resultados (41)
     y = data.loc[:, data.columns == 41]
     # se convierte la matriz de entrada a un vector
-    X = np.array(X)
-
-    normalized_X = scale_features(X)
 
 
+    normalized_X=(X-X.min())/(X.max()-X.min())
+    normalized_X = (b-a)*normalized_X + a 
+    
     # se genera un nuevo dataframe con los valores normalizados
     normalized_X = pd.DataFrame(normalized_X)
     output_data = normalized_X
@@ -93,7 +68,7 @@ if __name__ == "__main__":
 
 
 
-    
+
 
 
 
@@ -101,7 +76,6 @@ if __name__ == "__main__":
 
     # se procede a escribir el nuevo dataframe como train.txt
     output_data.to_csv(path_or_buf = OUT_PATH, index = False, mode = 'w+')
-
 
 
 
